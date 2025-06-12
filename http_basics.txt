@@ -1,0 +1,145 @@
+INTRO TO HTTP
+
+
+- HTTP stands for Hyper Text Transfer Protocol
+- It is the protocol of the web (said to be the foundation of data exchange on the web)
+- Used for communication between web servers and clients
+- There are two kinds of HTTP messages: 
+    -HTTP Requests (from client to server)
+    -HTTP Responses (from server to client)
+- It works on a request-response cycle called the HTTP request-response cycle
+
+
+HTTP is STATELESS
+- Which means that every request is independent and can be treated as a single transaction
+- Every request is independent and contains all information required to understand and process it
+- The server does not remember previous requests
+- The server also does not remember who you are in between requests
+- If the state is needed, it must be handled via cookies, tokens or sessions
+
+HTTP is TEXT-BASED
+- HTTP messages are human readable
+- Messages are in plain text (ASCII) formatted in a specific structure
+- The human readability of HTTP messages makes debugging and learning easier
+
+HTTPS 
+- stands for Hyper Text Transfer Protocol Secure
+- Here, the data sent is encrypted
+- This is done by SSL (Secure Sockets Layer) or TLS (Transport Layer Security)
+- Anytime users sent sensitive information, it is advised to use HTTPS
+- This can be done by installing an SSL certificate on your web host
+
+HTTP METHODS
+- HTTP Methods appear only in HTTP requests and not in responses
+- HTTP Methods define the action that the client wants to perform on a resource
+- Server never sends a method back, it sends a status code alongside a response body and optional headers
+- Some main HTTP Methods are:
+    1. GET
+    - The GET Method is used to retrieve data from the server
+    - E.g loading a standard HTML page, receiving JSON data
+    2. POST
+    - POST method is used to submit data to the server
+    - E.g when you submit a form or creating a new blog post
+    - Typically this data is stored in a database
+    3. PUT
+    - PUT method is used to update data already on server
+    - E.g editing a blog post would use this
+    4. DELETE
+    - DELETE method is used to delete data from server
+    - E.g deleting a blog post
+    5. PATCH
+    - Updates part of an existing resource (partial update)
+    - E.g updating just the title of a blog post
+
+
+- HTTP Message structure
+    HTTP Request structure:
+    <method> <path> <version>
+    <headers>
+
+    <body> 
+
+    - Here, path refers to the route of the site being called
+    - version refers to the HTTP version. Version mentioned determines the structure of the remaining part of the request
+    - method is the HTTP method
+    Example:
+    GET /index.html HTTP/1.1
+    Host: example.com
+    User-Agent: curl/7.68.0
+    Accept: */*
+
+    HTTP Response structure:
+	<version> <status_code> <status_text>
+    <headers>
+
+    <body>
+
+    Example: 
+    HTTP/1.1 200 OK
+    Content-Type: text/html
+    Content-Length: 1256
+
+    <html> ... </html>
+	
+
+- Each HTTP request and response has headers and a body associated with it
+- The body represents the actual data that is being sent and the headers represent metadata about the body
+- A HTTP request or response usually has multiple header fields
+
+- HTTP Header Fields
+- HTTP Headers are key: value pairs that give metadata about the request or response
+- Metadata basically means data about data
+- HTTP headers give data about the actual data in the body of the HTTP message
+- They usually provide information about the request, response or how the client should behave
+- HTTP headers consist of a name and a value in the form of a Key: Value Pair in the form Name: Value
+- HTTP Header Fields are classified into General Headers, Request Headers, Response Headers and Entity Headers
+
+        1. General Headers: Metadata about the message not the contents. Used in Both Requests and Responses.
+        Examples:
+            - Connection: Keep alive or close
+            - Date: Date/Time of message
+            - Cache-control: How caching should be handled
+
+        2. Request Headers: Information about the client or resource requested
+            - Cookies- If a cookie was previously assigned by a server to client and needs to be passed back it is done here
+            - Accept-xxx- Multiple Accept fields like Accept-encoding exist
+            - Content-Type- Type of data being sent
+            - Content-length- self explanatory
+            - Authorization- As HTTP is stateless, one might need to send some kind of token in order to validate
+            - User-Agent- Usually a long string that has to do with the software the user is using
+            - Referrer- Holds info regarding referring site if one were to click on a link
+
+        3. Response Headers: Information about the server or response
+            - Server-  kind of server essentially, usually hidden  E.g Apache, Nginx
+            - Content-Type- type of content essentially (E.g JSON, HTML)
+            - Content-Length- self explanatory, given in octets
+            - Set-Cookie- Allows server to give a piece of data called a cookie to client
+            - Date
+
+        4. Entity Headers: Describe the content in the body of the request/response
+
+- STATUS CODES - Very important to understand and memorize
+    - A status code is a 3 digit number sent by the server in a HTTP response
+    - It tells the client what happened to the request
+    - First digit groups codes into categories
+    - 1xx: INFORMATIONAL (Request received/processing)
+    - 2xx: SUCCESS (Successfully received, understood and accepted)
+    - 3xx: REDIRECT (Further action must be taken/ Redirect)
+    - 4xx: CLIENT ERROR (Request does not have what it needs)
+    - 5xx: SERVER ERROR (Server failed to fulfill an apparent valid request)
+    - Examples: 200- OK, 201- OK Created, 301- Moved to new URL, 304- Not modified (Cache Version), 400- Bad Request, 401- Unauthorized, 404- Not found, 500- Internal Server Error
+
+- HTTP/2
+    - HTTP version 1.1 has been the standard for a long time
+    - Now it has been revised and there is a new version of HTTP, HTTP/2
+    - Lot of under the hood changes 
+    - Responds with more data
+    - It is fast, efficient and secure.
+    - It reduces latency by enabling full request and response multiplexing
+
+- HTTP/3
+    - HTTP version 3.0 is also in existence
+    - One of the main changes is the use of the QUIC protocol instead of the TCP protocol
+    - The QUIC protocol can be thought of as the UDP protocol with all the reliability that the TCP protocol has
+    - It also does not involve the long handshake process that TCP involves
+    - This was done primarily to improve performance
