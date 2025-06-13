@@ -1,6 +1,5 @@
 INTRO TO HTTP
 
-
 - HTTP stands for Hyper Text Transfer Protocol
 - It is the protocol of the web (said to be the foundation of data exchange on the web)
 - Used for communication between web servers and clients

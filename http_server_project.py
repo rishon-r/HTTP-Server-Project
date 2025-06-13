@@ -16,10 +16,11 @@ def start_http_server():
     # A socket is an endpoint in a network communication system
     # They allow data to be sent and received over the network and are one of the most important parts of a network
     # Here, they facilitate the connection between the client and server and allow the server to manage multiple clients at the same time
-    # Without sockets, the communication needed for a web serveer to be implemented would not take place
+    # Without sockets, the communication needed for a web server to be implemented would not take place
     # Here, HTTP is the protocol used when data is sent or received over the sockets
 
     # Now, we initialize a socket of IPv4 family and TCP type
+    # Note that HTTP is an application layer protocol built on top of TCP which is a transport layer protocol
 
     # TCP is the Transmission Control Protocol
     # TCP establishes a connection between the sender and receiver and ensures that the data, on arrival, is complete, in order and error free
@@ -31,13 +32,15 @@ def start_http_server():
     # Third Step: ACK or Acknowledgement - The client receives the server's SYN-ACK Packet and responds with the ACK packet.
     # This packet acknowledges the server's SYN-ACK packet
     # At this point, the handshake is complete and both the client and server have established a reliable communication
+    # Data can now be sent between the client and server via the TCP protocol
 
     # IP stands for internet protocol. It is a set of rules that neeed to be followed when sending or receiving data over the internet
     # IPv4 is a type of IP address (IPv6 is the other newer type) and is used to identify a computer system in a network so that data is routed to the correct place
-    # IPv4 is the most stable version of IP and also the ost commonly used type
+    # IPv4 is the most stable version of IP and also the most commonly used type
 
     # socket object initialized below
     server_socket= socket.socket(socket.AF_INET, socket.SOCK_STREAM) # socket.socket(family, type)
+    # Here we have initialized a socket of IPv4 famly and TCP type
 
     # If we mentioned socket.SOCK_DGRAM as type instead of socket.SOCK_STREAM it would mean we want a socket of UDP type
     # UDP stands for User Datagram Protocol
@@ -46,7 +49,7 @@ def start_http_server():
     # TCP also provides error checking, retransmission of packets when they are corrupted and congestion control to reduce traffic load 
     # Hence, TCP is used more when data integrity matters and we can afford no loss of data. E.g Email and communcation over the internet
     # UDP does not initialize a connection with the handshake process, it sends packets without ensuring if the recipient is ready to receive packets
-    # Key benefit is UDP is faster as it does not have to do checking, However, the tradeoff is that there is no quarantee of packets being received. 
+    # Key benefit is UDP is faster as it does not have to do checking, However, the tradeoff is that there is no guarantee of packets being received. 
     # This is used in Voice chat, Video chat, etc.
 
     # Now, we will configure some optional socket settings
@@ -77,6 +80,7 @@ def start_http_server():
     # If flag is False, it is non blocking and vice versa
     server_socket.setblocking(True)
     # When blocking is set to False, it makes sense to use try and except blocks when accepting connections or receiving any kind of data
+    # By default it is set to be in blocking mode
 
     # Now, we will bind our socket to our local machine so that the server knows where to listen for incoming requests from
     # Done using our IP Address and port
@@ -100,7 +104,7 @@ def start_http_server():
     # If the maximum queue size is reached, new connection requests will either be refused or ignored based on the operating system
     server_socket.listen(5)
 
-    print(f"Listening on PORT: {SERVER_PORT} ...")
+    print(f"Server listening on PORT: {SERVER_PORT} ...")
 
     # To get the front element of the queue (i.e the first client trying to make a connection), we use the socket_obj.accept() method
     # Returns a tuple consisting of the client's socket object as first element and address as second element
@@ -111,7 +115,10 @@ def start_http_server():
     while True: # We use a while loop here so that the server is constantly trying to accept connections
         # Without the while loop the server only listens for one request 
         client_socket, client_address= server_socket.accept() # We have directly unpacked the tuple here
-        thread = threading.Thread(target=client_handler, args=(client_socket, client_address))
+        # Once we receive the first client tuple from the queue, we start a thread for that particular client
+        # The target for this thread is set to be the cliet_handler function which handles clients and parses requests
+        thread = threading.Thread(target=client_handler, args=(client_socket, client_address)) 
+        # The thread is set to be a daemon thread as it runs in the background and terminates whenever all the threads in the program terminate
         thread.daemon = True
         thread.start()
 
@@ -145,14 +152,16 @@ def client_handler(client_socket, client_address):
         elif request_path=="/" and request_method=="POST":
             content_length=0 
             for line in headers.split('\n'):
-                if line.lower().startswith('content-length'):
+                if line.lower().startswith('content-length'): 
+                        # The Content-Length header in an HTTP POST request tells the exact size (in bytes) of the request body. 
+                        # This lets the server know how much data to read from the client after the headers.
                         content_length = int(line.split(':')[1].strip()) # Getting the value at content-length header key:value pair
 
             while len(request_body) < content_length: # Reading additional body
                 request_body += client_socket.recv(1024).decode()
 
             response= f'HTTP/1.1 200 OK\nContent-Type: text/plain; charset=utf-8\n\nPOST data received:\n{request_body}' 
-
+           
 
         else:
             response= 'HTTP/1.1 405 Method Not Allowed OK\n\nAllow: GET' 
